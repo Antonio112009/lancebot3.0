@@ -2,14 +2,14 @@ package entities;
 
 import lombok.Data;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 public class Players {
 
     private long discord_id;
 
-    private Date joined_clan;
+    private LocalDate joined_clan;
 
     private String main_role;
 

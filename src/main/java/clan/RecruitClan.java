@@ -47,7 +47,7 @@ public class RecruitClan {
             text.append("Игрок: **").append(data.getGuild().getMemberById(key).getEffectiveName()).append("**\n");
             text.append("Начало рекрутства: **").append(value.getStart_date()).append("**\n");
             text.append("Конец рекрутства: **").append(value.getFinish_date()).append("**\n");
-            text.append("Осталось: **").append(DAYS.between(LocalDate.now(), value.getFinish_date().toLocalDate())).append("**\n\n");
+            text.append("Осталось: **").append(DAYS.between(LocalDate.now(), value.getFinish_date())).append("**\n\n");
         }
 
         data.getChannel().sendMessage(text).queue();

@@ -2,16 +2,16 @@ package entities;
 
 import lombok.Data;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 public class Recruit {
 
     private long discord_id;
 
-    private Date start_date;
+    private LocalDate start_date;
 
-    private Date finish_date;
+    private LocalDate finish_date;
 
     private String type;
 

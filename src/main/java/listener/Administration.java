@@ -1,6 +1,7 @@
 package listener;
 
 import clan.GeneralClan;
+import clan.HolidayClan;
 import clan.RecruitClan;
 import database.Database;
 import discord.ChangeAccess;
@@ -25,8 +26,6 @@ public class Administration extends ListenerAdapter {
 
         if(event.getAuthor().isBot()) return;
 
-//        System.out.println(event.getMessage().getContentRaw());
-
         if(!giveAccess(event, "access_low")) return;
 
         //        Списки клана
@@ -37,7 +36,7 @@ public class Administration extends ListenerAdapter {
             new RecruitClan(data).showRecruits();
 
         if(data.getContent().equals("!список запас"))
-            new GeneralClan(data).showHolidays();
+            new HolidayClan(data).showHolidays();
 
         if(!giveAccess(event, "access_medium")) return;
 

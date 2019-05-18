@@ -224,8 +224,8 @@ public class Database {
             while (resultSet.next()) {
                 Recruit recruit = new Recruit();
                 recruit.setDiscord_id(resultSet.getLong("discord_id"));
-                recruit.setStart_date(resultSet.getDate("start_date"));
-                recruit.setFinish_date(resultSet.getDate("finish_date"));
+                recruit.setStart_date(resultSet.getDate("start_date").toLocalDate());
+                recruit.setFinish_date(resultSet.getDate("finish_date").toLocalDate());
                 recruit.setType(resultSet.getString("type"));
                 recruit.setReason(resultSet.getString("reason"));
                 list.add(recruit);
@@ -248,15 +248,15 @@ public class Database {
         List<Holiday> list = new ArrayList<>();
         try {
             connection = DatabaseConnection.getConnection();
-            String query = "SELECT * FROM lanceDb.holiday " + additional;
+            String query = "SELECT * FROM lanceDb.holiday " + additional + " ORDER BY discord_id ASC";
 
             preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Holiday holiday = new Holiday();
                 holiday.setDiscord_id(resultSet.getLong("discord_id"));
-                holiday.setStart_date(resultSet.getDate("start_date"));
-                holiday.setFinish_date(resultSet.getDate("finish_date"));
+                holiday.setStart_date(resultSet.getDate("start_date").toLocalDate());
+                holiday.setFinish_date(resultSet.getDate("finish_date").toLocalDate());
                 holiday.setType(resultSet.getString("type"));
                 holiday.setReason(resultSet.getString("reason"));
                 list.add(holiday);
@@ -286,7 +286,7 @@ public class Database {
             while (resultSet.next()) {
                 Players players = new Players();
                 players.setDiscord_id(resultSet.getLong("discord_id"));
-                players.setJoined_clan(resultSet.getDate("joined_clan"));
+                players.setJoined_clan(resultSet.getDate("joined_clan").toLocalDate());
                 players.setSteam64_id(resultSet.getLong("steam64_id"));
                 players.setMain_role(resultSet.getString("main_role"));
                 players.setGroup_name(resultSet.getString("group_name"));
