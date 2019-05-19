@@ -3,8 +3,12 @@ package clan;
 import database.Database;
 import entities.Data;
 import entities.Recruit;
+import net.dv8tion.jda.core.entities.Role;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,5 +55,34 @@ public class RecruitClan {
         }
 
         data.getChannel().sendMessage(text).queue();
+    }
+
+
+    public void addRecruit(){
+        Database database = new Database();
+
+        if(data.getMentionedMembers().size() != 1){
+            //TODO: изменить на EmbedMessage!
+            data.getChannel().sendMessage("Игрок не упомянут или упомянуто более одного игрока.").queue();
+            return;
+        }
+
+        long discord_player = data.getMentionedMembers().get(0).getUser().getIdLong();
+
+        if(database.checkIfPlayerExists(discord_player)){
+            //TODO: изменить на EmbedMessage!
+            data.getChannel().sendMessage("Данный игрок находится в составе клана").queue();
+        } else {
+            database.insertNewPlayer(discord_player, 123L, new Date(System.currentTimeMillis()), "Рекрут", "Soldier");
+            long date_finish = LocalDate.now().plusMonths(2).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+            database.insertNewRecruit(discord_player,new Date(System.currentTimeMillis()), new Date(date_finish), "Обычная", null);
+
+            List<Role> roles = new ArrayList<>(data.getMentionedMembers().get(0).getRoles());
+            roles.add(data.roleByName("Рекрут"));
+            roles.add(data.roleByName("Lance"));
+
+            data.getController().modifyMemberRoles(data.getMentionedMembers().get(0), roles).queue();
+            data.getChannel().sendMessage("Новый рекрут принят в клан").queue();
+        }
     }
 }

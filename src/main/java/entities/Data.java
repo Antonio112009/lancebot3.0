@@ -52,4 +52,8 @@ public class Data {
             mentioned = false;
         }
     }
+
+    public Role roleByName(String role){
+        return event.getGuild().getRolesByName(role, true).get(0);
+    }
 }

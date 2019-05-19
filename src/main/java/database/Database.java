@@ -365,6 +365,28 @@ public class Database {
 
 
 
+    //CHECKERS
+    public boolean checkIfPlayerExists(long discord_id){
+        try {
+            connection = DatabaseConnection.getConnection();
+            preparedStatement = connection.prepareStatement("SELECT * FROM players WHERE discord_id = ?");
+
+            preparedStatement.setLong(1, discord_id);
+
+            ResultSet r1 = preparedStatement.executeQuery();
+            return r1.next();
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (connection != null) try { connection.close(); } catch (SQLException e) {e.printStackTrace();}
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException e) {e.printStackTrace();}
+        }
+    }
+
+
+
+
 
     private boolean sendQuery(String query){
         try {

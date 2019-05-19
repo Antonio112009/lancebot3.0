@@ -29,19 +29,53 @@ public class Administration extends ListenerAdapter {
         if(!giveAccess(event, "access_low")) return;
 
         //        Списки клана
-        if(data.getContent().equals("!список"))
+        if(data.getContent().equals("!список")) {
             new GeneralClan(data).showClanList();
+            return;
+        }
 
-        if(data.getContent().equals("!список рекрут"))
+        if(data.getContent().equals("!список рекрут")) {
             new RecruitClan(data).showRecruits();
+            return;
+        }
 
-        if(data.getContent().equals("!список запас"))
+        if(data.getContent().equals("!список запас")){
             new HolidayClan(data).showHolidays();
+            return;
+        }
+
+        if(data.getContent().startsWith("!профиль ")){
+            new GeneralClan(data).showProfile();
+            return;
+        }
+
 
         if(!giveAccess(event, "access_medium")) return;
 
-        else if (data.getContent().startsWith("!аудит "))
+        if (data.getContent().startsWith("!аудит ")) {
             new Embed(data).sendDefaultAudit();
+            return;
+        }
+
+        if (data.getContent().startsWith("!рекрут")){
+            new RecruitClan(data).addRecruit();
+            return;
+        }
+
+        if (data.getContent().startsWith("!основа")){
+            new GeneralClan(data).upgradeSoldier("Основной состав", 230, 126, 34);
+            return;
+        }
+
+        if (data.getContent().startsWith("!сержант")){
+            new GeneralClan(data).upgradeSoldier("Сержант", 241, 196, 15);
+            return;
+        }
+
+        if (data.getContent().startsWith("!офицер")){
+            new GeneralClan(data).upgradeSoldier("Офицер", 153, 45, 34);
+            return;
+        }
 
 
 
