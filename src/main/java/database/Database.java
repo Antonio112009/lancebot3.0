@@ -208,6 +208,7 @@ public class Database {
     }
 
 
+
     //Getters
     public List<Recruit> getRecruits(){
         return getRecruits("");
@@ -364,6 +365,43 @@ public class Database {
 
 
 
+    // Update
+    public void updatePlayerRole(long discord_id, String roleName){
+        try {
+            connection = DatabaseConnection.getConnection();
+            preparedStatement = connection.prepareStatement("UPDATE players SET main_role = ? WHERE discord_id = ?");
+
+            preparedStatement.setString(1, roleName);
+            preparedStatement.setLong(2, discord_id);
+            preparedStatement.executeUpdate();
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            if (connection != null) try { connection.close(); } catch (SQLException e) {e.printStackTrace();}
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException e) {e.printStackTrace();}
+        }
+    }
+
+
+
+    // Delete
+    public void deleteRecruit(long discord_id){
+        try {
+            connection = DatabaseConnection.getConnection();
+            preparedStatement = connection.prepareStatement("DELETE FROM recruit WHERE discord_id = ?");
+
+            preparedStatement.setLong(1, discord_id);
+            preparedStatement.executeUpdate();
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            if (connection != null) try { connection.close(); } catch (SQLException e) {e.printStackTrace();}
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException e) {e.printStackTrace();}
+        }
+    }
+
+
+
 
     //CHECKERS
     public boolean checkIfPlayerExists(long discord_id){
@@ -388,15 +426,14 @@ public class Database {
 
 
 
-    private boolean sendQuery(String query){
+    private void sendQuery(String query){
         try {
             connection = DatabaseConnection.getConnection();
             statement = connection.createStatement();
 
-            return statement.execute(query);
+            statement.execute(query);
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         } finally {
             if (connection != null) try { connection.close(); } catch (SQLException e) {e.printStackTrace();}
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException e) {e.printStackTrace();}

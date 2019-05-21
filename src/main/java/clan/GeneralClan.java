@@ -4,13 +4,14 @@ import database.Database;
 import entities.Data;
 import entities.Players;
 import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import sendMessage.Embed;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GeneralClan {
 
+    private String[] roleID = {"Рекрут", "Основной состав", "Сержант", "Механик", "Офицер", "Замком", "Командование"};
     private Data data;
 
     public GeneralClan(Data data) {
@@ -51,47 +52,77 @@ public class GeneralClan {
     }
 
 
+
+
     public void upgradeSoldier(String roleName, int r, int g, int b){
 
-        Data data = new Data(event);
-
+        //checking if member is mentioned
         if (!data.isMentioned()) {
             //TODO улучшить вывод ошибки на экран
             data.getChannel().sendMessage("Вы забыли упомянуть человека").queue();
             return;
         }
 
-        List<Role> roles = new ArrayList<>(data.getMentionedMember().getRoles());
+        List<Role> roles = new ArrayList<>(data.getMentionedMembers().get(0).getRoles());
+
 
         for (Role roleList : data.getMentionedMember().getRoles()) {
-            if (roleList.getName().startsWith(roleName[roleID])){
-                data.getChannel().sendMessage("Игрок " + data.getMentionedMember().getAsMention() + " имеет роль \"" + roleName[roleID] + "\"\n").queue();
+
+            //check if player is on Holiday
+            if (roleList.getName().startsWith("Запас")){
+                data.getChannel().sendMessage("Игрок " + data.getMentionedMember().getAsMention() + " имеет роль \"" + roleName + "\". Для начала выведите его из Запаса").queue();
+                return;
+            }
+
+            //check if member has current role (fuck MySQL checker =) )
+            if (roleList.getName().startsWith(roleName)){
+                data.getChannel().sendMessage("Игрок " + data.getMentionedMember().getAsMention() + " имеет роль \"" + roleName + "\"\n").queue();
                 return;
             }
         }
-        if (data.getCommand().length == 2) {
 
-            data.getChannel().sendMessage("Игрок " + data.getMentionedMember().getAsMention() + " игрок не имеет роль \"" + roleName[roleID] + "\"\n").queue();
 
-        } else if ((data.getCommand().length > 3) && (data.getComment().length == 2)){
-            Recruit recruit = new Recruit();
-            recruit.removeRecruit(data.getMentionedMember().getUser().getId());
-
+        if ((data.getCommand().length > 3) && (data.getComment().length == 2)){
+            String roleNameOld = "";
             for (int i = 0; i < roles.size(); i++){
-                for(String rName : roleName)
-                    if(roles.get(i).getName().equals(rName)) roles.remove(i);
+                for(String rName : roleID)
+                    if(roles.get(i).getName().equals(rName)) {
+                        roleNameOld = roles.get(i).getName();
+                        roles.remove(i);
+                    }
             }
-            roles.add(data.getRoleCustom(roleName[roleID]));
+
+            roles.add(data.roleByName(roleName));
             data.getController().modifyMemberRoles(data.getMentionedMember(), roles).queue();
 
-            //TODO в зависимости выводить понижение или повышение должности
-            embed.createMessageAudit(data.getLanceAudit(), data.getMember(), "Получение новой роли", "Игрок " + data.getMentionedMember().getAsMention() + " получил роль \"" + roleName[roleID] + "\"\nПричина: " + data.getComment()[1], r, g, b);
+            //database edits
+            new Database().updatePlayerRole(data.getMentionedMemberID(), roleName);
+            new Database().deleteRecruit(data.getMentionedMemberID());
 
+            //в зависимости выводится понижение или повышение должности
+            String upgradeReason = "повышен";
+            for(String role : roleID){
+                if(role.equals(roleName)){
+                    upgradeReason = "понижен";
+                    break;
+                }
+                if(role.equals(roleNameOld)){
+                    upgradeReason = "повышен";
+                    break;
+                }
+            }
+
+            new Embed(data).sendMessageAudit(data.getMember(), "Получение новой роли", "Игрок " + data.getMentionedMember().getAsMention() + " " + upgradeReason + " до " + roleName + "\"\nПричина: " + data.getComment()[1], r, g, b);
+            data.getChannel().sendMessage("Успешно " + upgradeReason+"!").queue();
 
 
         } else {
-            //TODO написать вывод ошибки о неправильно введенной команде
             data.getChannel().sendMessage("Команда была введена неправильно").queue();
         }
+    }
+
+
+    public void showHelp(){
+
     }
 }

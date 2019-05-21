@@ -19,6 +19,8 @@ public class Data {
     private Message message;
     private Member member;
     private List<Member> mentionedMembers;
+    private Member mentionedMember;
+    private Long mentionedMemberID;
     private String authorId;
     private String[] command;
     private String[] comment;
@@ -48,6 +50,8 @@ public class Data {
         this.lanceRole = event.getGuild().getRolesByName("Lance", true).get(0);
         try {
             this.mentionedMembers = event.getMessage().getMentionedMembers();
+            this.mentionedMember = event.getMessage().getMentionedMembers().get(0);
+            this.mentionedMemberID = event.getMessage().getMentionedMembers().get(0).getUser().getIdLong();
         } catch (Exception e) {
             mentioned = false;
         }

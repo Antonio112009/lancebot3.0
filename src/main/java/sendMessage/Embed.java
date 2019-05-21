@@ -2,6 +2,7 @@ package sendMessage;
 
 import entities.Data;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
 import java.awt.*;
@@ -31,5 +32,22 @@ public class Embed {
         embed.setTimestamp(Instant.now());
         channel.sendMessage(embed.build()).queue();
     }
+
+    public void sendMessageAudit(Member author, String title, String text, int r, int g, int b){
+        embed.setColor(new Color(r,g,b));
+        if(author.getNickname() == null) {
+            embed.setAuthor(author.getUser().getName(), null, author.getUser().getAvatarUrl());
+        } else {
+            embed.setAuthor(author.getNickname(), null, author.getUser().getAvatarUrl());
+        }
+
+        if (!title.isEmpty())
+            embed.setTitle(title);
+        embed.setDescription(text);
+        embed.setTimestamp(Instant.now());
+
+        data.getLanceAudit().sendMessage(embed.build()).queue();
+    }
+
 
 }

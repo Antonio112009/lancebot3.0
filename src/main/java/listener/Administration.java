@@ -28,6 +28,11 @@ public class Administration extends ListenerAdapter {
 
         if(!giveAccess(event, "access_low")) return;
 
+        if(data.getContent().startsWith("!помощь")){
+            new GeneralClan(data).showHelp();
+            return;
+        }
+
         //        Списки клана
         if(data.getContent().equals("!список")) {
             new GeneralClan(data).showClanList();
@@ -49,14 +54,6 @@ public class Administration extends ListenerAdapter {
             return;
         }
 
-
-        if(!giveAccess(event, "access_medium")) return;
-
-        if (data.getContent().startsWith("!аудит ")) {
-            new Embed(data).sendDefaultAudit();
-            return;
-        }
-
         if (data.getContent().startsWith("!рекрут")){
             new RecruitClan(data).addRecruit();
             return;
@@ -67,20 +64,27 @@ public class Administration extends ListenerAdapter {
             return;
         }
 
+
+        if(!giveAccess(event, "access_medium")) return;
+
+        if (data.getContent().startsWith("!аудит ")) {
+            new Embed(data).sendDefaultAudit();
+            return;
+        }
+
         if (data.getContent().startsWith("!сержант")){
             new GeneralClan(data).upgradeSoldier("Сержант", 241, 196, 15);
             return;
         }
 
+
+
+        if(!giveAccess(event, "access_high")) return;
+
         if (data.getContent().startsWith("!офицер")){
             new GeneralClan(data).upgradeSoldier("Офицер", 153, 45, 34);
             return;
         }
-
-
-
-
-        if(!giveAccess(event, "access_high")) return;
 
         if(data.getContent().equals("!доступ"))
             new ChangeAccess(data).showAccess();
@@ -88,10 +92,10 @@ public class Administration extends ListenerAdapter {
         if(data.getContent().startsWith("!дел "))
             new Special(data).deleteMessages();
 
-        if(data.getContent().startsWith("!talk "))
+        if(data.getContent().startsWith("!чат "))
             new TalkChannel(data).startPrivateConversation();
 
-        if(data.getContent().equals("!close"))
+        if(data.getContent().equals("!закрыть"))
             new TalkChannel(data).stopPrivateConversation();
 
         if(data.getContent().equals("!exit")){
