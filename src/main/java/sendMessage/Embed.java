@@ -17,17 +17,12 @@ public class Embed {
         this.data = data;
     }
 
-    public void sendDefaultAudit(){
-        String description = data.getComment()[1];
-        String title = data.getComment()[0].substring(7);
-        sendNotification(data.getGuild().getTextChannelsByName("lance_audit", true).get(0), title, description);
-    }
+    public Embed(){}
 
-    public void sendNotification(MessageChannel channel, String title, String text){
+    public void sendNotification(MessageChannel channel, Member author, String title, String text){
         embed.setColor(new Color(255,255,0));
-        embed.setAuthor(data.getMember().getEffectiveName(), null , data.getMember().getUser().getAvatarUrl());
-        if (!title.isEmpty())
-            embed.setTitle(title);
+        embed.setAuthor(author.getEffectiveName(), null , author.getUser().getAvatarUrl());
+        embed.setTitle(title);
         embed.setDescription(text);
         embed.setTimestamp(Instant.now());
         channel.sendMessage(embed.build()).queue();
